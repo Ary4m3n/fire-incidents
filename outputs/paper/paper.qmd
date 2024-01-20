@@ -22,12 +22,13 @@ library(palmerpenguins)
 
 
 # Introduction
+The Great Fire of Toronto in 1904 caused mass destruction. The fire demolished around 20 acres of the industrial area in the city of Toronto, demolishing at least 98 buildings, causing a dollar loss of $10 million and leaving numerous thousands unemployed [@greatFire]. Since then we have seen an improvement in city codes and policies, better civil planning and extensive training of firefighters [@fireMedium]. Till date, the Toronto Fire Services report approximately 10,000 fires each year which is of immense concern to the city of Toronto and its residents [@fireData].
 
-You can and should cross-reference sections and sub-sections. 
+The Fire Incidents data of Toronto includes incident reports of fire incidents as defined by the Ontario Fire Marshal from 2011-2022 [@openData]. This paper delves deeper into the trend of estimated dollar loss in fire incidents in the city of Toronto from 2011-2022 and also analyses the impact of an installation of sprinkler systems on the dollar loss. The aim of the paper is to analyse the impact of better planning, specifically an installation of sprinkler systems, on the extent of loss faced by the residents of Toronto. 
 
-The remainder of this paper is structured as follows. @sec-data....
+In this paper, Fire Incidents data [@openData] was used to first explore if there is a trend in the estimated dollar loss over the years, and then was used to find any correlation between better civil planning, i.e. the installation of sprinkler systems and a lesser loss of property. It was found that there is a general rising trend in the dollar loss between 2011 and 2022. The paper also found that the dollar loss was drastically higher for fire incidents where there was no sprinkler system installed. This leads us to make an important judgement that better civil planning helps reduce the impact of such unfortunate events.
 
-
+This paper is structured using the following sections: Data, Results and Discussion In the Data (@sec-data) section, the data source of the dataset from Open Data Toronto [@openData] is discussed and the data cleaning process is outlined. In the Results (@sec-results) section, the paper summarizes the data findings and relevant graphs of the trends observed. The paper ends with the Discussion (@sec-discussion) section, where the findings of the paper have been analysed and delved deeper into, and a further scope for the paper has been discussed.
 
 # Data {#sec-data}
 
@@ -101,7 +102,7 @@ We expect a positive relationship between the size of the wings and time spent a
 We can use maths by including latex between dollar signs, for instance $\theta$.
 
 
-# Results
+# Results {#sec-results}
 
 Our results are summarized in @tbl-modelresults.
 
@@ -136,7 +137,7 @@ modelsummary::modelsummary(
 
 
 
-# Discussion
+# Discussion {#sec-discussion}
 
 ## First discussion point {#sec-first-point}
 
