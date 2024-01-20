@@ -1,13 +1,11 @@
 ---
-title: "My title"
-subtitle: "My subtitle if needed"
+title: "An Analysis of a Rising Trend in Dollar Loss in Fire Incidents With and Without Sprinkler Systems in Toronto over a decade (2011-2022)"
 author: 
-  - First author
-  - Another author
-thanks: "Code and data are available at: LINK."
+  - Aryaman Sharma
+thanks: "Code and data are available at: https://github.com/Ary4m3n/fire-incidents.git"
 date: today
 date-format: long
-abstract: "First sentence. Second sentence. Third sentence. Fourth sentence."
+abstract: "A Fire Incidents dataset was used to assess the general trend in dollar loss in fire incidents and the impact of existence of sprinkler systems installed across the city of Toronto. Based on the analysis, a general rise over the years in the dollar loss in fire incidents as well as a massive amount of loss to property was found wherever sprinkler systems were not installed. This paper suggests that an installation of sprinkler systems will help reduce the impact of fire incidents on loss to property in Toronto."
 format: pdf
 number-sections: true
 bibliography: references.bib
