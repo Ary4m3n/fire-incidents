@@ -7,6 +7,7 @@ date: today
 date-format: long
 abstract: "A Fire Incidents dataset was used to assess the general trend in dollar loss in fire incidents and the impact of existence of sprinkler systems installed across the city of Toronto. Based on the analysis, a general rise over the years in the dollar loss in fire incidents as well as a massive amount of loss to property was found wherever sprinkler systems were not installed. This paper suggests that an installation of sprinkler systems will help reduce the impact of fire incidents on loss to property in Toronto."
 format: pdf
+toc: true
 number-sections: true
 bibliography: references.bib
 ---
@@ -31,6 +32,127 @@ In this paper, Fire Incidents data [@openData] was used to first explore if ther
 This paper is structured using the following sections: Data, Results and Discussion In the Data (@sec-data) section, the data source of the dataset from Open Data Toronto [@openData] is discussed and the data cleaning process is outlined. In the Results (@sec-results) section, the paper summarizes the data findings and relevant graphs of the trends observed. The paper ends with the Discussion (@sec-discussion) section, where the findings of the paper have been analysed and delved deeper into, and a further scope for the paper has been discussed.
 
 # Data {#sec-data}
+
+The data analysed in this paper was from Open Data Toronto [@openData]. The data was cleaned and analysed using the open source `R` programming language [@citeR]. R libraries and packages such as `opendatatoronto` [@openDataToronto], `tidyverse` [@citeTidyverse], `janitor` [@citeJanitor], `ggplot2` [@citeGgplot], `knitr` [@citeKnitr], `readr` [@citeReadr] and `dplyr` [@citeDplyr]. In the following sections, we will discuss the raw data (@sec-data-raw) and then move on to discussing the data cleaning process (@sec-data-clean). 
+
+## Raw Fire Incidents Data {#sec-data-raw}
+
+The raw data for this paper was obtained from Open Data Toronto [@openData] and we specifically looked at the Fire Incidents Data provided by the Ontario Fire Marshal from 2011-2022. We also looked at another data set related to this topic, Fire Services Incident Data [@openDataOther] but that data set firstly was last refreshed in 2019 and had been retired and replaced with the data set we used. 
+
+The raw data had loads of information (that was mainly unnecessary to us for this paper), which mainly included the area of origin, casualities, persons rescued, estimated dollar loss, fire incident type, fire timing, intersection (location), cause, sprinkler system presence etc. For this paper specifically, to observe and analyse the trend in dollar loss and the effect of better civil planning (i.e. existence of sprinkler systems), we did not require such a plethora of variables. The raw data set contains 2,357,639 data entries and 43 variables. Due to the size of the dataset, we could not include a table outlining the structure of the dataset. 
+
+In the next section (@sec-data-clean), we will outline the data-cleaning process and also show the first few rows of the cleaned data.
+
+
+## Cleaning Fire Incidents Data {#sec-data-clean}
+
+As stated above in (@sec-data-raw), we cleaned the data to cater to our needs of analyzing the trend in dollar loss and the effects of better civil planning. Specifically, we only kept 3 variables, the estimated dollar loss, the year in which the incident took place and sprinkler system presence which outlines whether a sprinkler system had been installed in the place where the incident took place. @tbl-cleaned shows the structure of the cleaned data by presenting the first 6 datapoints or rows. 
+
+Here, in order to obtain this cleaned data table, I got the year of the incident from the `alarm_time` variable in the raw data and cleaned the sprinkler system presence column to only show 4 unique statuses, "No sprinkler system", "Full sprinkler system present", "Undetermined" and "NA" as shown clearly in @tbl-cleaned using `R` [@citeR]. @tbl-cleaned shows the head of the cleaned data.
+
+```{r}
+#| echo: false
+#| eval: true
+#| warning: false
+#| message: false
+
+cleaned_fire_data <- read_csv("../data/cleaned_data.csv", show_col_types = FALSE)
+```
+```{r}
+#| echo: false
+#| eval: true
+#| label: tbl-cleaned
+#| tbl-cap: "Cleaned Data showing the first 6 rows"
+#| warning: false
+
+library(knitr)
+
+kable(head(cleaned_fire_data))
+# I read on how to add a table using knitr from ChatGPT 4, its referenced to in usage.txt.
+```
+
+Now that we have cleaned our raw fire incidents data and have generated a clean table. We will go on to the Results section (@sec-results) and look at the trend generated for the dollar loss over the years, 2011-2022 (@sec-results-year), and then look at the effect of the presence of sprinkler systems on the property or dollar loss (@sec-results-sprinkler).
+
+# Results {#sec-results}
+
+## Trend in Dollar Loss over 2011-2022 in Fire Incidents {#sec-results-year}
+
+@tbl-trend shows the table of the total estimated dollar loss over the years 2011-2022.
+```{r}
+#| echo: false
+#| eval: true
+#| label: tbl-trend
+#| tbl-cap: "Trend"
+#| warning: false
+#| message: false
+
+cleaned_fire_data_trend <- cleaned_fire_data |>
+  group_by(Year) |>
+  summarise(`Dollar Loss` = sum(`Dollar Loss`))
+
+cleaned_fire_data_trend$`Dollar Loss in Millions` <- cleaned_fire_data_trend$`Dollar Loss` / 1000000
+cleaned_fire_data_trend$Year <- as.numeric(cleaned_fire_data_trend$Year)
+
+kable(cleaned_fire_data_trend)
+```
+
+@fig-dollar-loss shows the bar plot of the @tbl-trend where the Dollar Loss in millions is plotted against the years 2011-2022.
+```{r}
+#| label: fig-dollar-loss
+#| fig-cap: Year vs Dollar Loss ($million) in Fire Incidents in Toronto (2011-2022)
+#| echo: false
+
+ggplot(cleaned_fire_data_trend, aes(x = `Year`, y = `Dollar Loss in Millions`)) +
+  geom_col(alpha = 1.5, fill = "darkorange") +
+  theme_minimal() +
+  scale_x_continuous(breaks = 2011:2022) + 
+  labs(x = "Year", y = "Dollar Loss in Millions")
+```
+
+
+## Effect of presence of Sprinkler Systems on Dollar Loss {#sec-results-sprinkler}
+
+@tbl-full shows the table of Dollar Loss over the years in the presence of proper sprinkler systems.
+```{r}
+#| echo: false
+#| eval: true
+#| label: tbl-full
+#| tbl-cap: "Full Sprinkler System Present"
+#| warning: false
+#| message: false
+
+cleaned_fire_data_full <- cleaned_fire_data |>
+  filter(`Sprinkler System Presence`=="Full sprinkler system present") |>
+  group_by(Year) |>
+  summarise(`Dollar Loss` = sum(`Dollar Loss`))
+
+cleaned_fire_data_full$`Dollar Loss in Millions` <- cleaned_fire_data_full$`Dollar Loss` / 1000000
+
+kable(cleaned_fire_data_full)
+
+```
+
+@tbl-none shows the table of Dollar Loss over the years when there were no sprinkler systems present.
+```{r}
+#| echo: false
+#| eval: true
+#| label: tbl-none
+#| tbl-cap: "No Sprinkler System Present"
+#| warning: false
+#| message: false
+
+cleaned_fire_data_none <- cleaned_fire_data |>
+  filter(`Sprinkler System Presence`=="No sprinkler system") |>
+  group_by(Year) |>
+  summarise(`Dollar Loss` = sum(`Dollar Loss`))
+
+cleaned_fire_data_none$`Dollar Loss in Millions` <- cleaned_fire_data_none$`Dollar Loss` / 1000000
+
+kable(cleaned_fire_data_none)
+```
+
+
+
 
 Some of our data is of penguins (@fig-bills), from @palmerpenguins.
 
@@ -102,7 +224,6 @@ We expect a positive relationship between the size of the wings and time spent a
 We can use maths by including latex between dollar signs, for instance $\theta$.
 
 
-# Results {#sec-results}
 
 Our results are summarized in @tbl-modelresults.
 
