@@ -132,6 +132,7 @@ cleaned_fire_data_full <- cleaned_fire_data |>
 
 cleaned_fire_data_full$`Dollar Loss in Millions` <- cleaned_fire_data_full$`Dollar Loss` / 1000000
 cleaned_fire_data_full$Year <- as.numeric(cleaned_fire_data_full$Year)
+# I read more on the usage of as.numeric from ChatGPT 4, its referenced to in usage.txt.
 
 kable(cleaned_fire_data_full)
 
@@ -179,7 +180,7 @@ plot2 <- ggplot(cleaned_fire_data_none, aes(x = `Year`, y = `Dollar Loss in Mill
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   scale_x_continuous(breaks = 2011:2022) +
   labs(fill = "Without Sprinkler")
-
+# I read on how to add two plots next to each other for comparison from ChatGPT 4, its referenced to in usage.txt.
 grid.arrange(plot1, plot2, ncol=2)
 ```
 
