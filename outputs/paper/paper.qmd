@@ -5,7 +5,7 @@ author:
 thanks: "Code and data are available at: https://github.com/Ary4m3n/fire-incidents.git"
 date: today
 date-format: long
-abstract: "A Fire Incidents dataset was used to assess the general trend in dollar loss in fire incidents and the impact of existence of sprinkler systems installed across the city of Toronto. Based on the analysis, a general rise over the years in the dollar loss in fire incidents as well as a massive amount of loss to property was found wherever sprinkler systems were not installed. This paper suggests that an installation of sprinkler systems will help reduce the impact of fire incidents on loss to property in Toronto."
+abstract: "A Fire Incidents dataset was used to assess the general trend in dollar loss in fire incidents and also assess the impact of existence of sprinkler systems installed across the city of Toronto. Based on the analysis, a general rise over the years in the dollar loss in fire incidents as well as a massive amount of loss to property was found wherever sprinkler systems were not installed. This paper suggests that an installation of sprinkler systems will help reduce the impact of fire incidents on loss to property in Toronto."
 format: pdf
 toc: true
 number-sections: true
@@ -19,6 +19,7 @@ bibliography: references.bib
 
 library(tidyverse)
 library(palmerpenguins)
+library(gridExtra)
 ```
 
 
@@ -33,7 +34,7 @@ This paper is structured using the following sections: Data, Results and Discuss
 
 # Data {#sec-data}
 
-The data analysed in this paper was from Open Data Toronto [@openData]. The data was cleaned and analysed using the open source `R` programming language [@citeR]. R libraries and packages such as `opendatatoronto` [@openDataToronto], `tidyverse` [@citeTidyverse], `janitor` [@citeJanitor], `ggplot2` [@citeGgplot], `knitr` [@citeKnitr], `readr` [@citeReadr] and `dplyr` [@citeDplyr]. In the following sections, we will discuss the raw data (@sec-data-raw) and then move on to discussing the data cleaning process (@sec-data-clean). 
+The data analysed in this paper was from Open Data Toronto [@openData]. The data was cleaned and analysed using the open source `R` programming language [@citeR]. R libraries and packages such as `opendatatoronto` [@openDataToronto], `tidyverse` [@citeTidyverse], `janitor` [@citeJanitor], `ggplot2` [@citeGgplot], `knitr` [@citeKnitr], `readr` [@citeReadr], `gridExtra` [@citeGridExtra] and `dplyr` [@citeDplyr]. In the following sections, we will discuss the raw data (@sec-data-raw) and then move on to discussing the data cleaning process (@sec-data-clean). 
 
 ## Raw Fire Incidents Data {#sec-data-raw}
 
@@ -63,6 +64,7 @@ cleaned_fire_data <- read_csv("../data/cleaned_data.csv", show_col_types = FALSE
 #| eval: true
 #| label: tbl-cleaned
 #| tbl-cap: "Cleaned Data showing the first 6 rows"
+#| tbl-cap-location: bottom
 #| warning: false
 
 library(knitr)
@@ -77,12 +79,13 @@ Now that we have cleaned our raw fire incidents data and have generated a clean 
 
 ## Trend in Dollar Loss over 2011-2022 in Fire Incidents {#sec-results-year}
 
-@tbl-trend shows the table of the total estimated dollar loss over the years 2011-2022.
+@tbl-trend shows the table of the total estimated dollar loss over the years 2011-2022 in the city of Toronto in fire incidents. The table presents three columns: year, dollar loss and dollar loss in millions. The years range from 2011-2022, and the subsequent columns present the total estimated loss of property (dollar loss) in that specific year. For plotting simplicity, we introduced the dollar loss in millions variable here because it makes the plot (@fig-dollar-loss) more coherent and easy for interpretation.
 ```{r}
 #| echo: false
 #| eval: true
 #| label: tbl-trend
-#| tbl-cap: "Trend"
+#| tbl-cap: "Total Estimated Dollar Loss per year (2011-2022)"
+#| tbl-cap-location: bottom
 #| warning: false
 #| message: false
 
@@ -109,10 +112,11 @@ ggplot(cleaned_fire_data_trend, aes(x = `Year`, y = `Dollar Loss in Millions`)) 
   labs(x = "Year", y = "Dollar Loss in Millions")
 ```
 
+We can clearly observe an increasing trend in the dollar loss in fire incidents in the city of Toronto over the years in @fig-dollar-loss. The plot starts from showing a dollar loss of approximately `$`50 million in 2011, and about `$`40 million in 2012. The plot peaks in 2019 where it reports an estimate dollar loss of about `$`120 million. The plot them shows a dollar loss of approximately `$`85 million in 2021, and about `$`90 million in 2022, indicating a general rising trend over the decade. We will delve deeper into the implications and impact of this trend over the years in the Discussion Section (@sec-discussion).
 
 ## Effect of presence of Sprinkler Systems on Dollar Loss {#sec-results-sprinkler}
 
-@tbl-full shows the table of Dollar Loss over the years in the presence of proper sprinkler systems.
+@tbl-full shows the table of Dollar Loss over the years in the presence of proper sprinkler systems. As shown in @tbl-trend, the table presents three columns: year, dollar loss and dollar loss in millions, where the dollar loss in millions has been used to plot the bar graph in @fig-dollar-loss-both.
 ```{r}
 #| echo: false
 #| eval: true
@@ -127,12 +131,13 @@ cleaned_fire_data_full <- cleaned_fire_data |>
   summarise(`Dollar Loss` = sum(`Dollar Loss`))
 
 cleaned_fire_data_full$`Dollar Loss in Millions` <- cleaned_fire_data_full$`Dollar Loss` / 1000000
+cleaned_fire_data_full$Year <- as.numeric(cleaned_fire_data_full$Year)
 
 kable(cleaned_fire_data_full)
 
 ```
 
-@tbl-none shows the table of Dollar Loss over the years when there were no sprinkler systems present.
+@tbl-none shows the table of Dollar Loss over the years when there were no sprinkler systems present and has the same columns as @tbl-full. This table, i.e. @tbl-none and @tbl-full have been used to plot @fig-dollar-loss-both
 ```{r}
 #| echo: false
 #| eval: true
@@ -147,194 +152,64 @@ cleaned_fire_data_none <- cleaned_fire_data |>
   summarise(`Dollar Loss` = sum(`Dollar Loss`))
 
 cleaned_fire_data_none$`Dollar Loss in Millions` <- cleaned_fire_data_none$`Dollar Loss` / 1000000
+cleaned_fire_data_none$Year <- as.numeric(cleaned_fire_data_none$Year)
 
 kable(cleaned_fire_data_none)
 ```
 
-
-
-
-Some of our data is of penguins (@fig-bills), from @palmerpenguins.
+@fig-dollar-loss-both, on the left (in red), shows the dollar loss each year in fire incidents where **full sprinkler system** was present, and on the right shows the dollar loss each year in fire incidents where **no sprinkler system** was present. Just by looking at the plots, we observe that there is a significant difference between there being full sprinkler system installed and there being no spinkler system installed. This along with the implications of such civil planning with further be delved deeper into in the Discussion Section (@sec-discussion).
 
 ```{r}
-#| label: fig-bills
-#| fig-cap: Bills of penguins
+#| label: fig-dollar-loss-both
+#| fig-cap: Year vs Dollar Loss ($million) in Fire Incidents in Toronto (2011-2022)`:` With (red) and Without (blue) Sprinkler Systems
 #| echo: false
 
-ggplot(penguins, aes(x = island, fill = species)) +
-  geom_bar(alpha = 0.8) +
-  scale_fill_manual(values = c("darkorange","purple","cyan4"),
-                    guide = "none") +
+y_limits <- c(0, 100)
+plot1 <- ggplot(cleaned_fire_data_full, aes(x = `Year`, y = `Dollar Loss in Millions`)) + 
+  geom_col(alpha = 1.5, fill = "red") + 
+  ylim(y_limits) +
   theme_minimal() +
-  facet_wrap(~species, ncol = 1) +
-  coord_flip()
-```
-
-Talk more about it.
-
-And also planes (@fig-planes). (You can change the height and width, but don't worry about doing that until you have finished every other aspect of the paper - Quarto will try to make it look nice and the defaults usually work well once you have enough text.)
-
-```{r}
-#| label: fig-planes
-#| fig-cap: Relationship between wing length and width
-#| echo: false
-#| warning: false
-#| message: false
-
-analysis_data <- read_csv(here::here("outputs/data/analysis_data.csv"))
-
-analysis_data |> 
-  ggplot(aes(x = width, y = length)) +
-  geom_point(alpha = 0.8) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) + 
+  scale_x_continuous(breaks = 2011:2022) +
+  labs(fill = "With Sprinkler")
+plot2 <- ggplot(cleaned_fire_data_none, aes(x = `Year`, y = `Dollar Loss in Millions`)) + 
+  geom_col(alpha = 1.5, fill = "blue") + 
+  ylim(y_limits) + 
   theme_minimal() +
-  labs(x = "Wing width (mm)",
-       y = "Wing length (mm)")
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_x_continuous(breaks = 2011:2022) +
+  labs(fill = "Without Sprinkler")
+
+grid.arrange(plot1, plot2, ncol=2)
 ```
-
-Talk way more about it. 
-
-
-
-# Model
-
-The goal of our modelling strategy is twofold. Firstly,...
-
-Here we briefly describe the Bayesian analysis model used to investigate... Background details and diagnostics are included in [Appendix -@sec-model-details].
-
-## Model set-up
-
-Define $y_i$ as the number of seconds that the plane remained aloft. Then $\beta_i$ is the wing width and $\gamma_i$ is the wing length, both measured in millimeters.  
-
-\begin{align} 
-y_i|\mu_i, \sigma &\sim \mbox{Normal}(\mu_i, \sigma) \\
-\mu_i &= \alpha + \beta_i + \gamma_i\\
-\alpha &\sim \mbox{Normal}(0, 2.5) \\
-\beta &\sim \mbox{Normal}(0, 2.5) \\
-\gamma &\sim \mbox{Normal}(0, 2.5) \\
-\sigma &\sim \mbox{Exponential}(1)
-\end{align}
-
-We run the model in R [@citeR] using the `rstanarm` package of @rstanarm. We use the default priors from `rstanarm`.
-
-
-### Model justification
-
-We expect a positive relationship between the size of the wings and time spent aloft. In particular...
-
-We can use maths by including latex between dollar signs, for instance $\theta$.
-
-
-
-Our results are summarized in @tbl-modelresults.
-
-```{r}
-#| echo: false
-#| eval: true
-#| warning: false
-#| message: false
-
-library(rstanarm)
-
-first_model <-
-  readRDS(file = here::here("outputs/models/first_model.rds"))
-```
-
-```{r}
-#| echo: false
-#| eval: true
-#| label: tbl-modelresults
-#| tbl-cap: "Explanatory models of flight time based on wing width and wing length"
-#| warning: false
-
-modelsummary::modelsummary(
-  list(
-    "First model" = first_model
-  ),
-  statistic = "mad",
-  fmt = 2
-)
-```
-
-
-
 
 # Discussion {#sec-discussion}
 
-## First discussion point {#sec-first-point}
+## Trend in Dollar Loss over 2011-2022 in Fire Incidents {#sec-disc-first-point}
 
-If my paper were 10 pages, then should be be at least 2.5 pages. The discussion is a chance to show off what you know and what you learnt from all this. 
+As seen in @fig-dollar-loss and communicated in @sec-results-year, we observe a general rising trend over the years from 2011-2022 in the dollar loss or property loss in Fire Incidents in Toronto. The data tends to skew more towards the latter years where as reported in @sec-results-year, there was a dollar loss of approximately `$`90 million in 2022 versus `$`50 million in 2011. As a general trend it is very evident to the reader that there is a general increase over the years.
 
-## Second discussion point
+Let us now delve deeper into the possible reasons of such a trend. Firstly, as the population increases over the years there are more chances of there being fire incidents. As the city of Toronto gets more densely populated there is a higher chance or probability of there being a fire incident than when it was less densely populated. Secondly, the city of Toronto has evolved over the years by constructing skyscrapers, apartments, offices etc. for the residents to live and work in. As the number buildings in general increase around us, there will consequently be more chances of there being fire incidents than before. Finally, we can not ignore that with an improvement in infrastructure of the city, i.e. building better roadway systems or highways, there has been an influx of residents of surrounding areas to come to Toronto to work. This can also lead to there being more fire incidents such as unfortunate car or vehicle fires. 
 
-## Third discussion point
+All together, there may be numerous reasons to such a rise in the trend over the years, but the three stated above give a good idea of what those reasons might revolve around.
 
-## Weaknesses and next steps
+## Effect of presence of Sprinkler Systems on Dollar Loss {#sec-disc-second-point}
 
-Weaknesses and next steps should also be included.
+As seen in @fig-dollar-loss-both and communicated in @sec-results-sprinkler, we observe a clear difference in the dollar loss over the years in the case of there being a presence of full sprinkler system and there being no sprinkler system. We see that while in the case of full sprinkler system being present the dollar loss is at max around `$`15 million, on the other hand in the case of no sprinkler system present the dollar loss reaches a maximum of around `$`95 million too. Generally, we see that the dollar loss amounts when there is no sprinkler system present are significantly higher than when there is one present.
 
-\newpage
+When we delve deeper into the possible reasons of such a trend, we find a few prominent and obvious ones. Remarkably, such a major difference is observed because of the obvious reason that if there is a sprinkler system present, it will help extinguish the fire before the first responders or fire fighters come to scene and take the measures to cease the fire. This will consequently save the infrastructure from experiencing severe damages and hence reduce the general dollar loss or property loss caused in that specific incident. On the other hand, in the case that there is no sprinkler system present, we will have to wait for the fire fighters to arrive on the scene of the incident and then act, by when the fire could have already caused major damages to the infrastructure.
 
-\appendix
+@fig-dollar-loss-both also speaks to the importance of such essential civil planning that might prevent major structural damages or property losses from happening. 
 
-# Appendix {-}
+## Weaknesses and Further Scope {#sec-disc-weaknesses}
 
+While working on the paper we came across a few weaknesses that could be built on to make the report even more coherent. Firstly, we observed that in the case of the figures presented in @tbl-full and @tbl-none and the plot in @fig-dollar-loss-both, there might have been lesser data points for the case of full sprinkler system present that maybe caused the figures for the dollar loss to be generally lesser than for the case of no sprinkler system. 
 
-# Additional data details
+Additionally, the variable of presence of sprinkler system also included **NA** and **Undetermined** statuses which were not accounted for in this report. These two fields would include incidents such as vehicle fires, where the criterion of there being a sprinkler system is not applicable as they can not exist in vehicles in general. In this report, as we are generally looking at the impact of better civil planning we chose to ignore the aforementioned statuses. 
 
-# Model details {#sec-model-details}
+As a further scope, an extension to this report could include taking into account the NA and Undetermined statuses as well when analyzing the data. Then, we can look more into the response times of the first responders and analyse the impact of good training in reducing property damage or dollar loss. Another extension could also be looking at intersections where majority of the fire incidents have taken place and analyse how to better plan the neighborhood in a way as to reduce property loss in the future. All of these extensions can be easily made using the same raw data set as used in this paper.
 
-## Posterior predictive check
-
-In @fig-ppcheckandposteriorvsprior-1 we implement a posterior predictive check. This shows...
-
-In @fig-ppcheckandposteriorvsprior-2 we compare the posterior with the prior. This shows... 
-
-```{r}
-#| eval: true
-#| echo: false
-#| message: false
-#| warning: false
-#| label: fig-ppcheckandposteriorvsprior
-#| layout-ncol: 2
-#| fig-cap: "Examining how the model fits, and is affected by, the data"
-#| fig-subcap: ["Posterior prediction check", "Comparing the posterior with the prior"]
-
-pp_check(first_model) +
-  theme_classic() +
-  theme(legend.position = "bottom")
-
-posterior_vs_prior(first_model) +
-  theme_minimal() +
-  scale_color_brewer(palette = "Set1") +
-  theme(legend.position = "bottom") +
-  coord_flip()
-```
-
-## Diagnostics
-
-@fig-stanareyouokay-1 is a trace plot. It shows... This suggests...
-
-@fig-stanareyouokay-2 is a Rhat plot. It shows... This suggests...
-
-```{r}
-#| echo: false
-#| eval: true
-#| message: false
-#| warning: false
-#| label: fig-stanareyouokay
-#| fig-cap: "Checking the convergence of the MCMC algorithm"
-#| fig-subcap: ["Trace plot", "Rhat plot"]
-#| layout-ncol: 2
-
-plot(first_model, "trace")
-
-plot(first_model, "rhat")
-```
-
-
-
-\newpage
-
+In conclusion, we have observed a general rising trend in the dollar loss over the years in fire incidents in the city of Toronto and have also observed that with better civil planning, specifically installing sprinkler systems, we can prevent from major property damage from taking place.
 
 # References
 

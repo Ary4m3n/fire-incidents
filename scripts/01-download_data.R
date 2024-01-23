@@ -4,8 +4,8 @@
 # Date: 19 Jan 2024
 # Contact: aryaman.sharma@mail.utoronto.ca
 # License: MIT
-# Pre-requisites: [...UPDATE THIS...]
-# Any other information needed? [...UPDATE THIS...]
+# Pre-requisites: None
+# Any other information needed?: This is the first step towards downloading the raw data
 
 
 #### Workspace setup ####
