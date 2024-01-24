@@ -63,7 +63,7 @@ cleaned_fire_data <- read_csv("../data/cleaned_data.csv", show_col_types = FALSE
 #| echo: false
 #| eval: true
 #| label: tbl-cleaned
-#| tbl-cap: "Cleaned Data showing the first 6 rows"
+#| tbl-cap: "Cleaned Data showing Dollar loss over 2011-2022 with indication of Sprinkler System"
 #| tbl-cap-location: bottom
 #| warning: false
 
@@ -121,7 +121,7 @@ We can clearly observe an increasing trend in the dollar loss in fire incidents 
 #| echo: false
 #| eval: true
 #| label: tbl-full
-#| tbl-cap: "Full Sprinkler System Present"
+#| tbl-cap: "Total Estimated Dollar Loss over 2011-2022 with Full Sprinkler System Present"
 #| warning: false
 #| message: false
 
@@ -143,7 +143,7 @@ kable(cleaned_fire_data_full)
 #| echo: false
 #| eval: true
 #| label: tbl-none
-#| tbl-cap: "No Sprinkler System Present"
+#| tbl-cap: "Total Estimated Dollar Loss over 2011-2022 with No Sprinkler System Present"
 #| warning: false
 #| message: false
 
@@ -172,14 +172,14 @@ plot1 <- ggplot(cleaned_fire_data_full, aes(x = `Year`, y = `Dollar Loss in Mill
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) + 
   scale_x_continuous(breaks = 2011:2022) +
-  labs(fill = "With Sprinkler")
+  labs(title = "Full Sprinkler System")
 plot2 <- ggplot(cleaned_fire_data_none, aes(x = `Year`, y = `Dollar Loss in Millions`)) + 
   geom_col(alpha = 1.5, fill = "blue") + 
   ylim(y_limits) + 
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   scale_x_continuous(breaks = 2011:2022) +
-  labs(fill = "Without Sprinkler")
+  labs(title = "No Sprinkler System")
 # I read on how to add two plots next to each other for comparison from ChatGPT 4, its referenced to in usage.txt.
 grid.arrange(plot1, plot2, ncol=2)
 ```
@@ -190,7 +190,7 @@ grid.arrange(plot1, plot2, ncol=2)
 
 As seen in @fig-dollar-loss and communicated in @sec-results-year, we observe a general rising trend over the years from 2011-2022 in the dollar loss or property loss in Fire Incidents in Toronto. The data tends to skew more towards the latter years where as reported in @sec-results-year, there was a dollar loss of approximately `$`90 million in 2022 versus `$`50 million in 2011. As a general trend it is very evident to the reader that there is a general increase over the years.
 
-Let us now delve deeper into the possible reasons of such a trend. Firstly, as the population increases over the years there are more chances of there being fire incidents. As the city of Toronto gets more densely populated there is a higher chance or probability of there being a fire incident than when it was less densely populated. Secondly, the city of Toronto has evolved over the years by constructing skyscrapers, apartments, offices etc. for the residents to live and work in. As the number buildings in general increase around us, there will consequently be more chances of there being fire incidents than before. Finally, we can not ignore that with an improvement in infrastructure of the city, i.e. building better roadway systems or highways, there has been an influx of residents of surrounding areas to come to Toronto to work. This can also lead to there being more fire incidents such as unfortunate car or vehicle fires. 
+Let us now delve deeper into the possible reasons of such a trend. Firstly, i believe that as the population increases over the years there are more chances of there being fire incidents. As the city of Toronto gets more densely populated there is a higher chance or probability of there being a fire incident than when it was less densely populated. Secondly, the city of Toronto has evolved over the years by constructing skyscrapers, apartments, offices etc. for the residents to live and work in. As the number buildings in general increase around us, there will consequently be more chances of there being fire incidents than before. Finally, we can not ignore that with an improvement in infrastructure of the city, i.e. building better roadway systems or highways, there has been an influx of residents of surrounding areas to come to Toronto to work. This can also lead to there being more fire incidents such as unfortunate car or vehicle fires. 
 
 All together, there may be numerous reasons to such a rise in the trend over the years, but the three stated above give a good idea of what those reasons might revolve around.
 

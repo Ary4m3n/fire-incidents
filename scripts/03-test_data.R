@@ -8,7 +8,6 @@
 
 #### Workspace setup ####
 library(tidyverse)
-# [...UPDATE THIS...]
 
 #### Test data ####
 # Here we assign fire_incident_data to the cleaned_data that we cleaned in 02-data_cleaning.R
