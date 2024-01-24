@@ -5,7 +5,7 @@
 # Contact: aryaman.sharma@mail.utoronto.ca
 # License: MIT
 # Pre-requisites: run the R script 01-download_data.R before running this script
-# Any other information needed?: This is the second step after fulfilling the pre-requisites
+# Any other information needed?: This is the second step after fulfilling the pre-requisites mentioned above.
 
 #### Workspace setup ####
 library(tidyverse)

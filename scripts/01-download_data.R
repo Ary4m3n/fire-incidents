@@ -20,6 +20,8 @@ library(tidyverse)
 #     show_col_types = FALSE
 #   )
 
+# This is another way of downloading the data which is through the opendatatoronto library
+# NOTE: the code here has been taken from the "For Developers" Section of https://open.toronto.ca/dataset/fire-incidents/
 # get package
 package <- show_package("64a26694-01dc-4ec3-aa87-ad8509604f50")
 # package
